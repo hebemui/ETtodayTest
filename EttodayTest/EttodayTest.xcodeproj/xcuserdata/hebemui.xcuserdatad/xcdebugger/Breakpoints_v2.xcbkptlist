@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CCF0B524-7ECA-4C51-B808-3F0779B11C24"
+            uuid = "82658BF9-67CB-4D60-B96E-2CE94F436F04"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EttodayTest/ViewControllers/MainViewController.swift"
+            filePath = "EttodayTest/ViewModels/MainViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "18"
-            endingLineNumber = "18"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "seatch(item:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

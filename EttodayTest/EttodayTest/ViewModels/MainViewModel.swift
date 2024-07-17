@@ -11,7 +11,7 @@ import Combine
 class MainViewModel {
     
     var cancellables = Set<AnyCancellable>()
-    var results: [Track] = []
+    @Published var results: [Track] = []
     
     func seatch(item: String) {
         fetch(item: item)
