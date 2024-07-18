@@ -26,7 +26,6 @@ class MainViewController: UIViewController {
     
     // Data
     private let viewModel: MainViewModel = MainViewModel()
-    private var keyword: String = "jason mars"
     private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - Life Cycle
@@ -42,7 +41,7 @@ class MainViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.seatch(item: keyword)
+        viewModel.searchText = "jason mars"
     }
 
     // MARK: - Configuration
@@ -76,6 +75,7 @@ class MainViewController: UIViewController {
         textField.layer.cornerRadius = 6
         textField.layer.masksToBounds = true
         textField.borderStyle = .roundedRect
+        textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         
         searchButton.setTitle("Search", for: .normal)
         searchButton.backgroundColor = .black
@@ -91,9 +91,14 @@ class MainViewController: UIViewController {
     
     // MARK: - Events
     @objc private func searchButtonTapped() {
-        
+        guard let text = textField.text else { return }
+        viewModel.searchText = text
     }
     
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        guard let text = textField.text else { return }
+        viewModel.searchText = text
+    }
 }
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -110,6 +115,3 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return viewModel.results.count
     }
 }
-
-
-// https://is1-ssl.mzstatic.com/image/thumb/Video124/v4/e0/99/ef/e099ef44-43b1-4768-50a2-d95162b78957/Little-Mermaid_iTunes_LSR_2000x3000.lsr/100x100bb.jpg

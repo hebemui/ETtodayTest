@@ -10,21 +10,34 @@ import Combine
 
 class MainViewModel {
     
-    var cancellables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     @Published var results: [Track] = []
+    @Published var searchText = ""
     
-    func seatch(item: String) {
-        fetch(item: item)
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .finished:
-                    print("Finished successfully")
-                case .failure(let error):
-                    print("Failed with error: \(error)")
+    init() {
+        $searchText
+            .removeDuplicates()
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .map { [weak self] text -> AnyPublisher<SearchResult, Error> in
+                guard !text.isEmpty else { return
+                    Just(SearchResult(resultCount: self?.results.count ?? 0, results: self?.results ?? [])).setFailureType(to: Error.self).eraseToAnyPublisher() }
+                return self?.fetch(item: text) ?? Empty().eraseToAnyPublisher()
+            }
+            .switchToLatest()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("Search completed successfully")
+                    case .failure(let error):
+                        print("Search failed with error: \(error)")
+                    }
+                },
+                receiveValue: { [weak self] searchResult in
+                    self?.results = searchResult.results
                 }
-            }, receiveValue: { searchResult in
-                self.results.append(contentsOf: searchResult.results)
-            })
+            )
             .store(in: &cancellables)
     }
     

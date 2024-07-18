@@ -52,7 +52,7 @@ class TrackCell: UICollectionViewCell {
         
         artworkImageView.leadingAnchor.constraint(equalTo: artworkImageView.superview!.leadingAnchor, constant: 10).isActive = true
         artworkImageView.topAnchor.constraint(greaterThanOrEqualTo: artworkImageView.superview!.topAnchor, constant: 22).isActive = true
-        artworkImageView.bottomAnchor.constraint(greaterThanOrEqualTo: artworkImageView.superview!.bottomAnchor, constant: -22).isActive = true
+        artworkImageView.bottomAnchor.constraint(lessThanOrEqualTo: artworkImageView.superview!.bottomAnchor, constant: -22).isActive = true
         artworkImageView.centerYAnchor.constraint(equalTo: artworkImageView.superview!.centerYAnchor).isActive = true
         artworkImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         artworkImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
