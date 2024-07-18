@@ -21,7 +21,7 @@
 `Track`
 - `trackName`: String?
 - `trackTimeMillis`: Int?
-- `longDescriptio`n: String?
+- `longDescription`: String?
 - `artworkUrl100`: URL?
 - `previewUrl`: URL?
 
