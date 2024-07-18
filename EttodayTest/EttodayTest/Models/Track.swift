@@ -12,6 +12,7 @@ struct Track: Codable {
     let trackTimeMillis: Int?
     let longDescription: String?
     let artworkUrl100: URL?
+    let previewUrl: URL?
     
     func getTimeString() -> String {
         guard let trackTimeMillis else { return "" }

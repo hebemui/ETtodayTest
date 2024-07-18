@@ -5,14 +5,68 @@
 //  Created by Hebe Mui on 2024/7/16.
 //
 
-import Foundation
+import UIKit
 import Combine
+import AVFoundation
+
+enum Status {
+    case play
+    case pause
+    case idle
+    
+    var image: UIImage? {
+        switch self {
+        case .play:
+            UIImage(systemName: "pause.fill")
+        case .pause:
+            UIImage(systemName: "play.fill")
+        case .idle:
+            nil
+        }
+    }
+    
+    var next: Status {
+        switch self {
+        case .play:
+            return .pause
+        case .pause:
+            return .play
+        case .idle:
+            return .play
+        }
+    }
+}
 
 class MainViewModel {
     
-    private var cancellables = Set<AnyCancellable>()
+    var currentTrack: Track? {
+        didSet {
+            handlePlayer(oldValue)
+        }
+    }
+    var currentTrackIndexPath: IndexPath?
+    var currentPlayerStatus: Status = .idle
     @Published var results: [Track] = []
     @Published var searchText = ""
+    private var cancellables = Set<AnyCancellable>()
+    
+    private var audioPlayer: AVAudioPlayer?
+    
+    private func handlePlayer(_ oldTrack: Track?) {
+        
+        if currentTrack?.previewUrl == oldTrack?.previewUrl {
+            currentPlayerStatus = currentPlayerStatus.next
+            if currentPlayerStatus == .play {
+                audioPlayer?.play()
+            } else if currentPlayerStatus == .pause {
+                audioPlayer?.pause()
+            }
+        } else if let url = currentTrack?.previewUrl {
+            audioPlayer?.stop()
+            currentPlayerStatus = .play
+            downloadAndPlayAudio(from: url)
+        }
+    }
     
     init() {
         $searchText
@@ -52,5 +106,32 @@ class MainViewModel {
             .decode(type: SearchResult.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+    }
+    
+    private func downloadAndPlayAudio(from url: URL) {
+            let task = URLSession.shared.downloadTask(with: url) { (localURL, response, error) in
+                if let localURL = localURL {
+                    do {
+                        self.audioPlayer = try AVAudioPlayer(contentsOf: localURL)
+                        self.audioPlayer?.prepareToPlay()
+                        self.audioPlayer?.play()
+                    } catch {
+                        print("Error playing audio: \(error.localizedDescription)")
+                    }
+                } else {
+                    if let error = error {
+                        print("Error downloading audio: \(error.localizedDescription)")
+                    }
+                }
+            }
+            task.resume()
+        }
+    
+    func getTrackStatus(_ track: Track) -> Status {
+        if track.previewUrl == currentTrack?.previewUrl {
+            return currentPlayerStatus
+        } else {
+            return .idle
+        }
     }
 }

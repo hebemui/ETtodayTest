@@ -12,15 +12,20 @@ class TrackCell: UICollectionViewCell {
     
     // MARK: - Properties
     // UI
-    private let stateImageView = UIImageView()
     private let artworkImageView = UIImageView()
     private let nameLabel = UILabel()
     private let timeLabel = UILabel()
     private let descriptoinLabel = UILabel()
+    private let statusImageView = UIImageView()
     
     // Data
     private var cancellable: AnyCancellable?
     private var loader = ImageLoader()
+    var status: Status = .play {
+        didSet {
+            statusImageView.image = status.image
+        }
+    }
     
     // MARK: - LifeCycle
     override init(frame: CGRect) {
@@ -42,17 +47,19 @@ class TrackCell: UICollectionViewCell {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptoinLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusImageView.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(artworkImageView)
         addSubview(nameLabel)
         addSubview(timeLabel)
         addSubview(descriptoinLabel)
+        addSubview(statusImageView)
         
         widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
         
         artworkImageView.leadingAnchor.constraint(equalTo: artworkImageView.superview!.leadingAnchor, constant: 10).isActive = true
-        artworkImageView.topAnchor.constraint(greaterThanOrEqualTo: artworkImageView.superview!.topAnchor, constant: 22).isActive = true
-        artworkImageView.bottomAnchor.constraint(lessThanOrEqualTo: artworkImageView.superview!.bottomAnchor, constant: -22).isActive = true
+        artworkImageView.topAnchor.constraint(greaterThanOrEqualTo: artworkImageView.superview!.topAnchor, constant: 35).isActive = true
+        artworkImageView.bottomAnchor.constraint(lessThanOrEqualTo: artworkImageView.superview!.bottomAnchor, constant: -35).isActive = true
         artworkImageView.centerYAnchor.constraint(equalTo: artworkImageView.superview!.centerYAnchor).isActive = true
         artworkImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         artworkImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -70,6 +77,11 @@ class TrackCell: UICollectionViewCell {
         descriptoinLabel.trailingAnchor.constraint(equalTo: descriptoinLabel.superview!.trailingAnchor, constant: -10).isActive = true
         descriptoinLabel.bottomAnchor.constraint(equalTo: descriptoinLabel.superview!.bottomAnchor, constant: -10).isActive = true
         
+        statusImageView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        statusImageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        statusImageView.centerXAnchor.constraint(equalTo: artworkImageView.centerXAnchor).isActive = true
+        statusImageView.bottomAnchor.constraint(equalTo: artworkImageView.topAnchor, constant: -10).isActive = true
+        
         nameLabel.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         nameLabel.numberOfLines = 2
         nameLabel.textColor = .black
@@ -82,11 +94,6 @@ class TrackCell: UICollectionViewCell {
         descriptoinLabel.font = UIFont.systemFont(ofSize: 12)
         descriptoinLabel.numberOfLines = 0
         descriptoinLabel.textColor = .black.withAlphaComponent(0.5)
-        
-        artworkImageView.backgroundColor = .red
-        nameLabel.text = "long track name long long long longlonglonglong ..."
-        timeLabel.text = "4:20"
-        descriptoinLabel.text = "long description:  here is description, pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. pretty long. "
     }
     
     func updateCell(_ track: Track) {

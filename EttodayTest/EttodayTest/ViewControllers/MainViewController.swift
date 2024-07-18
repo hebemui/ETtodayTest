@@ -17,9 +17,6 @@ class MainViewController: UIViewController {
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-//        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-//        layout.minimumLineSpacing = CGFloat(integerLiteral: 10)
-//        layout.minimumInteritemSpacing = CGFloat(integerLiteral: 10)
         layout.scrollDirection = .vertical
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
@@ -107,11 +104,24 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return UICollectionViewCell()
         }
         let result = viewModel.results[indexPath.item]
+        let trackStatus = viewModel.getTrackStatus(result)
+        cell.status = trackStatus
         cell.updateCell(result)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.results.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let track = viewModel.results[indexPath.item]
+        let oldTrackIndexPath = viewModel.currentTrackIndexPath
+        viewModel.currentTrackIndexPath = indexPath
+        viewModel.currentTrack = track
+        collectionView.reloadItems(at: [indexPath])
+        if let oldIndexPath = oldTrackIndexPath {
+            collectionView.reloadItems(at: [oldIndexPath])
+        }
     }
 }
